@@ -1,7 +1,8 @@
-import StartupCard from "@/components/StartupCard";
+import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
 import SearchForm from "../../components/SearchForm";
-import { client } from "@/sanity/lib/client";
+// import { client } from "@/sanity/lib/client";
 import { STARTUPS_QUERY } from "@/sanity/lib/query";
+import { sanityFetch, SanityLive } from "@/sanity/lib/live";
 
 export default async function Home({
   searchParams,
@@ -10,24 +11,11 @@ export default async function Home({
 }) {
   const query = (await searchParams).query;
 
-  const posts = await client.fetch(STARTUPS_QUERY);
+  // const posts = await client.fetch(STARTUPS_QUERY);
+  const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY });
 
-  console.log(JSON.stringify(posts, null, 2));
+  // console.log(JSON.stringify(posts, null, 2));
 
-  // const posts = [
-  //   {
-  //     _createdAt: new Date(),
-
-  //     author: { _id: "1", name: "John Doe" },
-  //     _id: 1,
-  //     views: 100,
-  //     description: "A platform for startups to pitch their ideas",
-  //     image:
-  //       "https://images.unsplash.com/photo-1727774429053-a0ef7f45d7f8?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  //     category: "Tech",
-  //     title: "Startup Pitch",
-  //   },
-  // ];
   return (
     <>
       {/* Hero Section */}
@@ -50,7 +38,7 @@ export default async function Home({
 
         <ul className="card_grid">
           {posts?.length > 0 ? (
-            posts.map((post: StartupCardType, index: number) => (
+            posts.map((post: StartupTypeCard) => (
               <StartupCard key={post?._id} post={post} />
             ))
           ) : (
@@ -58,6 +46,8 @@ export default async function Home({
           )}
         </ul>
       </section>
+
+      <SanityLive />
     </>
   );
 }
